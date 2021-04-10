@@ -1,0 +1,15 @@
+{
+  "name": "github-finder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "concurrently \"cd backend && yarn install\" \"cd frontend && yarn install\"",
+    "start": "cross-env REACT_APP_API_URL=api concurrently \"cd backend && yarn start\" \"cd frontend && yarn start\"",
+    "test": "cd backend && yarn test"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.1",
+    "cross-env": "^7.0.3"
+  }
+}
