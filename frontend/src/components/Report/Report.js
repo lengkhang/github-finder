@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Table, Tag, Skeleton, Typography, Alert } from 'antd';
 import { loadSearchHistory } from '../../actions/searchHistory';
+import { SAMPLE_USERS } from '../../constants/user';
 
 const { Paragraph } = Typography;
 
@@ -9,7 +10,8 @@ const columns = [
   {
     title: 'User',
     dataIndex: 'userId',
-    key: 'userId'
+    key: 'userId',
+    render: (userId) => SAMPLE_USERS.find(user => user.id === userId).name
   },
   {
     title: 'Search type',
@@ -57,6 +59,7 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
   const { searchHistory } = useSelector(state => state);
   const { error, isLoading } = searchHistory;
   const dispatch = useDispatch();
+  // const { currentPage, setCurrentPage }
 
   const skeletonRows = 5;
   const rowKey = '_id';
@@ -64,8 +67,9 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
   const data = searchHistory.items;
   const total = data.total; //TODO: Backend to return total
 
-  const onPageChange = () => {
-
+  const onPageChange = (page) => {
+    //TODO: Call searchHistory endpoint with pagination
+    console.log('==> page', page);
   };
 
   useEffect(() => {
@@ -88,7 +92,7 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
         pagination={{
           total,
           pageSize: pageSize,
-          current: currentPage,
+          // current: currentPage,
           showSizeChanger: false,
           onChange: onPageChange
         }}
