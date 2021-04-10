@@ -12,7 +12,8 @@ const repositories = (state = INITIAL_STATE, action) => {
     case SEARCH_REPOSITORIES:
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        error: null
       };
 
     case SEARCH_REPOSITORIES_SUCCESS:
@@ -24,10 +25,10 @@ const repositories = (state = INITIAL_STATE, action) => {
       };
 
     case SEARCH_REPOSITORIES_FAILED:
-      console.log('==> search-error:', action.data);
       return {
         ...state,
-        error: action.data.error.message,
+        items: [],
+        error: action.message,
         isLoading: false
       };
 

@@ -1,10 +1,10 @@
 import { put, takeLatest } from 'redux-saga/effects';
-import { SEARCH_REPOSITORIES, SEARCH_REPOSITORIES_SUCCESS } from '../constants/repositories';
+import { SEARCH_REPOSITORIES, SEARCH_REPOSITORIES_SUCCESS, SEARCH_REPOSITORIES_FAILED } from '../constants/repositories';
 
 function* fetchData(payload) {
   try {
     const { data } = payload;
-    const { texts, type, pageNo, pageSize } = data;
+    const { texts, type, pageNo = 1, pageSize } = data;
 
     //TODO: EncodeURIComponent
     const query = `${type}=${texts}`;
@@ -13,10 +13,13 @@ function* fetchData(payload) {
 
     const results = yield response.json();
 
-    yield put({type: SEARCH_REPOSITORIES_SUCCESS, data: results});
+    if (response.ok) {
+      yield put({type: SEARCH_REPOSITORIES_SUCCESS, data: results});
+    } else {
+      throw new Error(results.error?.message);
+    }
   } catch (err) {
-    console.log('==> err:', err);
-    yield put({type: 'FETCH_FAILED', message: err.message});
+    yield put({type: SEARCH_REPOSITORIES_FAILED, message: err.message || 'Something wrong!' });
   }
 }
 

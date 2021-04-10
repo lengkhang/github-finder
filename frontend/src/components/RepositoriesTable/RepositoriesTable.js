@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tag, Skeleton, Typography } from 'antd';
+import { Table, Tag, Skeleton, Typography, Alert } from 'antd';
 
 const { Paragraph } = Typography;
 
@@ -52,7 +52,7 @@ const generateSkeleton = () => {
   }));
 };
 
-const RepositoriesTable = ({ data, isLoading, total, pageSize, currentPage, onPagination }) => {
+const RepositoriesTable = ({ data, isLoading, total, pageSize, currentPage, onPagination, error }) => {
   const skeletonRows = 5;
   const rowKey = 'id';
   const skeletonData = new Array(skeletonRows).fill({}).map((value, index) => ({ [rowKey]: index }));
@@ -63,8 +63,11 @@ const RepositoriesTable = ({ data, isLoading, total, pageSize, currentPage, onPa
 
   return (
     <>
+      {
+        error && <Alert message={`Error: ${error}`} type="error" />
+      }
       <Paragraph style={{ textAlign: 'right' }}>
-        { !isLoading && total ? `Showing ${pageSize * (currentPage - 1) + 1} - ${pageSize * currentPage} of ${total}` : <br /> }
+        { !isLoading && !error && total ? `Showing ${pageSize * (currentPage - 1) + 1} - ${pageSize * currentPage} of ${total}` : <br /> }
       </Paragraph>
 
       <Table

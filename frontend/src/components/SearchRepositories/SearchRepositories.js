@@ -12,7 +12,7 @@ const PAGE_SIZE = 20;
 
 const SearchRepositories = () => {
   const { repositories: storeRepositories } = useSelector(state => state);
-  const { isLoading, total } = storeRepositories;
+  const { isLoading, total, error } = storeRepositories;
   const dispatch = useDispatch();
 
   const [searchType, setSearchType] = useState('language');
@@ -45,7 +45,6 @@ const SearchRepositories = () => {
     if (data.length) {
       await onSearch({ texts: data });
       setCurrentPage(1);
-
     } else {
       await dispatch(clearSearch());
       setCurrentPage(undefined);
@@ -57,14 +56,12 @@ const SearchRepositories = () => {
   const onPagination = async (page) => {
     setCurrentPage(page);
 
-    await onSearch(page);
+    await onSearch({ pageNo: page });
   };
 
   // useEffect(() => {
   //   setRepositories(storeRepositories.items);
   // }, [storeRepositories.items]);
-
-  console.log('==> currentPage:', currentPage);
 
   return (
     <Content style={{ margin: '0 16px' }}>
@@ -87,6 +84,7 @@ const SearchRepositories = () => {
       </div>
 
       <RepositoriesTable
+        error={error}
         data={storeRepositories.items}
         isLoading={isLoading}
         total={total}
