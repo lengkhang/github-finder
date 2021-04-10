@@ -4,10 +4,11 @@ const { Schema } = mongoose;
 
 const SearchSchema = new Schema(
   {
-    keyword: String,
-    type: String
+    texts: [String],
+    type: String,
+    userId: String
   },
   { timestamps: true }
 );
 
-export default mongoose.model('Search', SearchSchema);
+export default mongoose.model('SearchHistory', SearchSchema);
