@@ -7,7 +7,7 @@
     "lint": "eslint . --fix",
     "test": "jest",
     "start-mongodb": "docker run -p 27017:27017 mongo",
-    "start": "nodemon src/server.js --exec babel-node"
+    "start": "nodemon -r dotenv/config src/server.js --exec babel-node"
   },
   "dependencies": {
     "@octokit/rest": "^18.5.2",
@@ -24,6 +24,7 @@
     "@babel/preset-env": "^7.13.12",
     "@shelf/jest-mongodb": "^1.2.3",
     "babel-jest": "^26.6.3",
+    "dotenv": "^8.2.0",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
