@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Layout, Input, Select, Typography } from 'antd';
+import { Input, Select, Typography } from 'antd';
 import RepositoriesTable from '../RepositoriesTable/RepositoriesTable';
 import { searchRepositories, clearSearch } from '../../actions/repositories';
 
-const { Content } = Layout;
 const { Option } = Select;
 const { Text } = Typography;
 
@@ -64,7 +63,7 @@ const SearchRepositories = () => {
   // }, [storeRepositories.items]);
 
   return (
-    <Content style={{ margin: '0 16px' }}>
+    <>
       <div className="site-layout-background" style={{ padding: 24 }}>
         <Input.Group compact style={{ textAlign: 'center', verticalAlign: 'middle', height: '100%', lineHeight: '32px' }}>
           <Text style={{ marginRight: 8 }}>Search repositories:</Text>
@@ -92,7 +91,7 @@ const SearchRepositories = () => {
         onPagination={onPagination}
         pageSize={PAGE_SIZE}
       />
-    </Content>
+    </>
   );
 };
 
