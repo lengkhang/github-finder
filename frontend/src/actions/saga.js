@@ -6,7 +6,6 @@ function* fetchData(payload) {
     const { data } = payload;
     const { texts, type, pageNo = 1, pageSize } = data;
 
-    //TODO: EncodeURIComponent
     const query = `${type}=${encodeURIComponent(texts)}`;
 
     const response = yield fetch(`${process.env.REACT_APP_API_URL}/search?${query}&pageSize=${pageSize}&pageNo=${pageNo}`);
