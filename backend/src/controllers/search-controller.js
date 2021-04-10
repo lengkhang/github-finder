@@ -7,9 +7,9 @@ const octokit = new Octokit({
   previews: ["mercy-preview"]
 });
 
-const saveQueryIntoDatabase = async ({ user, searchType, searchTexts }) => {
+const saveQueryIntoDatabase = async ({ userId, searchType, searchTexts }) => {
   try {
-    const searchHistory = new SearchHistory({ type: searchType, texts: searchTexts, user });
+    const searchHistory = new SearchHistory({ type: searchType, texts: searchTexts, userId });
 
     await searchHistory.save();
   } catch (err) {
@@ -59,7 +59,7 @@ export const getSearch = async (req, res) => {
       per_page: parseInt(pageSize)
     });
 
-    await saveQueryIntoDatabase({ user: 'a', searchType, searchTexts });  //TODO: Get user via middleware
+    await saveQueryIntoDatabase({ userId: 'a', searchType, searchTexts });  //TODO: Get user via middleware
   
     return res.status(200).json({ total: result.data.total_count, items: result.data.items });
   } catch (err) {
