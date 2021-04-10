@@ -1,4 +1,5 @@
 import { LOAD_SEARCH_HISTORY, LOAD_SEARCH_HISTORY_SUCCESS, LOAD_SEARCH_HISTORY_FAIL } from '../constants/searchHistory';
+import { USER_CHANGED } from '../constants/user';
 
 const INITIAL_STATE = {
   items: [],
@@ -31,6 +32,9 @@ const searchHistory = (state = INITIAL_STATE, action) => {
         error: action.message,
         isLoading: false
       };
+
+    case USER_CHANGED:
+      return INITIAL_STATE;
 
     default:
       return state;

@@ -1,4 +1,5 @@
 import { SEARCH_REPOSITORIES, SEARCH_REPOSITORIES_SUCCESS, SEARCH_REPOSITORIES_FAILED, SEARCH_REPOSITORIES_CLEAR } from '../constants/repositories';
+import { USER_CHANGED } from '../constants/user';
 
 const INITIAL_STATE = {
   items: [],
@@ -32,15 +33,9 @@ const repositories = (state = INITIAL_STATE, action) => {
         isLoading: false
       };
 
+    case USER_CHANGED:
     case SEARCH_REPOSITORIES_CLEAR:
-      return {
-        ...state,
-        items: [],
-        error: null,
-        total: 0
-      };
-
-      //TODO: Clear repositories when change user
+      return INITIAL_STATE;
 
     default:
       return state;
