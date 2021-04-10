@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.get('/search', getSearch);
-router.get('/search/history/user/:id', getAllSearchHistories);
+router.get('/search/history', getAllSearchHistories);
 
 export default router;
