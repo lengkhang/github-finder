@@ -11,6 +11,7 @@ import { fetchAllData } from './actions/saga';
 import SideMenu from './components/SideMenu/SideMenu';
 import HeaderMenu from './components/HeaderMenu/HeaderMenu';
 import SearchRepositories from './components/SearchRepositories/SearchRepositories';
+import Report from './components/Report/Report';
 
 const { Footer, Content } = Layout;
 
@@ -34,7 +35,7 @@ const App = () => {
 
             <Content style={{ margin: '0 16px' }}>
               <Route exact path="/" component={SearchRepositories} />
-              <Route path="/report" component={SearchRepositories} />
+              <Route path="/report" component={Report} />
             </Content>
 
             <Footer style={{ textAlign: 'center' }}>Github finder ©2021 Created by Andrew Khaw</Footer>

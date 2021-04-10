@@ -16,7 +16,7 @@ const SideMenu = () => {
 
   const users = SAMPLE_USERS.filter(user => user.role === USER_ROLE.USER);
   const admins = SAMPLE_USERS.filter(user => user.role === USER_ROLE.ADMIN);
-  const initialUser = users[0];
+  const initialUser = admins[0];
 
   useEffect(() => {
     if (!currentUser) {
