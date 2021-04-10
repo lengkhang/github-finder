@@ -17,7 +17,6 @@ const SearchRepositories = () => {
   const [searchType, setSearchType] = useState('language');
   const [searchTexts, setSearchTexts] = useState([]);
   const [currentPage, setCurrentPage] = useState(undefined);
-  // const [repositories, setRepositories] = useState(storeRepositories.items);
 
   const onSearch = async ({ texts, type, pageNo }) => {
     await dispatch(
@@ -47,8 +46,6 @@ const SearchRepositories = () => {
     } else {
       await dispatch(clearSearch());
       setCurrentPage(undefined);
-
-      // setRepositories([]);
     }
   };
 
@@ -57,10 +54,6 @@ const SearchRepositories = () => {
 
     await onSearch({ pageNo: page });
   };
-
-  // useEffect(() => {
-  //   setRepositories(storeRepositories.items);
-  // }, [storeRepositories.items]);
 
   return (
     <>

@@ -40,6 +40,8 @@ const repositories = (state = INITIAL_STATE, action) => {
         total: 0
       };
 
+      //TODO: Clear repositories when change user
+
     default:
       return state;
   }
