@@ -36,6 +36,7 @@ const repositories = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         items: [],
+        error: null,
         total: 0
       };
 
