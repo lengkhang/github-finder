@@ -3,7 +3,6 @@ import { Table, Tag, Skeleton, Typography } from 'antd';
 
 const { Paragraph } = Typography;
 
-const PAGE_SIZE = 20;
 const columns = [
   {
     title: 'Full name',
@@ -53,12 +52,10 @@ const generateSkeleton = () => {
   }));
 };
 
-const RepositoriesTable = ({ data, isLoading, total, page, onPagination }) => {
+const RepositoriesTable = ({ data, isLoading, total, pageSize, currentPage, onPagination }) => {
   const skeletonRows = 5;
   const rowKey = 'id';
   const skeletonData = new Array(skeletonRows).fill({}).map((value, index) => ({ [rowKey]: index }));
-
-  console.log('==> table-page:', page);
 
   const onPageChange = (page) => {
     onPagination(page);
@@ -67,7 +64,7 @@ const RepositoriesTable = ({ data, isLoading, total, page, onPagination }) => {
   return (
     <>
       <Paragraph style={{ textAlign: 'right' }}>
-        { !isLoading && total ? `Showing ${PAGE_SIZE * (page - 1) + 1} - ${PAGE_SIZE * page} of ${total}` : <br /> }
+        { !isLoading && total ? `Showing ${pageSize * (currentPage - 1) + 1} - ${pageSize * currentPage} of ${total}` : <br /> }
       </Paragraph>
 
       <Table
@@ -76,8 +73,8 @@ const RepositoriesTable = ({ data, isLoading, total, page, onPagination }) => {
         rowKey={rowKey}
         pagination={{
           total,
-          pageSize: PAGE_SIZE,
-          current: page,
+          pageSize: pageSize,
+          current: currentPage,
           showSizeChanger: false,
           onChange: onPageChange
         }}

@@ -8,6 +8,8 @@ const { Content } = Layout;
 const { Option } = Select;
 const { Text } = Typography;
 
+const PAGE_SIZE = 20;
+
 const SearchRepositories = () => {
   const { repositories: storeRepositories } = useSelector(state => state);
   const { isLoading, total } = storeRepositories;
@@ -18,11 +20,13 @@ const SearchRepositories = () => {
   const [currentPage, setCurrentPage] = useState(undefined);
   // const [repositories, setRepositories] = useState(storeRepositories.items);
 
-  const onSearch = async ({ texts, type }) => {
+  const onSearch = async ({ texts, type, pageNo }) => {
     await dispatch(
       searchRepositories({
         texts: texts || searchTexts,
-        type: type || searchType
+        type: type || searchType,
+        pageNo: pageNo || currentPage,
+        pageSize: PAGE_SIZE
       })
     );
   };
@@ -50,9 +54,10 @@ const SearchRepositories = () => {
     }
   };
 
-  const onPagination = (page) => {
+  const onPagination = async (page) => {
     setCurrentPage(page);
-    //TODO: Dispatch search
+
+    await onSearch(page);
   };
 
   // useEffect(() => {
@@ -85,8 +90,9 @@ const SearchRepositories = () => {
         data={storeRepositories.items}
         isLoading={isLoading}
         total={total}
-        page={currentPage}
+        currentPage={currentPage}
         onPagination={onPagination}
+        pageSize={PAGE_SIZE}
       />
     </Content>
   );

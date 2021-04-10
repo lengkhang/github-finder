@@ -4,12 +4,12 @@ import { SEARCH_REPOSITORIES, SEARCH_REPOSITORIES_SUCCESS } from '../constants/r
 function* fetchData(payload) {
   try {
     const { data } = payload;
-    const { texts, type } = data;
+    const { texts, type, pageNo, pageSize } = data;
 
     //TODO: EncodeURIComponent
     const query = `${type}=${texts}`;
 
-    const response = yield fetch(`${process.env.REACT_APP_API_URL}/search?${query}&pageSize=100&pageNo=1`);
+    const response = yield fetch(`${process.env.REACT_APP_API_URL}/search?${query}&pageSize=${pageSize}&pageNo=${pageNo}`);
 
     const results = yield response.json();
 
