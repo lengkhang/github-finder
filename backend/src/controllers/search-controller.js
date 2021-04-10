@@ -29,7 +29,6 @@ const getSearchTexts = (searchType, languages, topics) => {
 }
 
 export const getAllSearchHistories = (req, res) => {
-  //TODO: Filter by user?
   //TODO: Handle pagination
   SearchHistory.find((err, searchHistory) => {
     if (err) return res.status(500).json({ success: false, error: err });
@@ -41,6 +40,7 @@ export const getAllSearchHistories = (req, res) => {
   //http://localhost:3001/api/search?topic=ruby,graphql&pageSize=100&pageNo=1
 export const getSearch = async (req, res) => {
   //TODO: Validate query string using JOI?
+  const { id: userId } = req.currentUser;
   const { language, topic, pageNo = 1, pageSize } = req.query || {};
 
   console.log('==> pageNo, pageSize:', pageNo, pageSize, language, topic)
@@ -60,7 +60,7 @@ export const getSearch = async (req, res) => {
       per_page: parseInt(pageSize)
     });
 
-    await saveQueryIntoDatabase({ userId: 'a', searchType, searchTexts });  //TODO: Get user via middleware
+    await saveQueryIntoDatabase({ userId, searchType, searchTexts });  //TODO: Get user via middleware
   
     return res.status(200).json({ total: result.data.total_count, items: result.data.items });
   } catch (err) {
