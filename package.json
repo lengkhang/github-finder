@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "yarn && concurrently \"cd backend && yarn\" \"cd frontend && yarn\"",
+    "build": "yarn && concurrently \"cd backend && yarn\" \"cd frontend && cp .env.example .env && yarn\"",
     "start-mongodb": "cd backend && yarn start-mongodb",
     "start": "cross-env REACT_APP_API_URL=api concurrently \"cd backend && yarn start\" \"cd frontend && yarn start\"",
     "test": "cd backend && yarn test"
