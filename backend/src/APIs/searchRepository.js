@@ -72,7 +72,6 @@ export const getSearch = async (req, res) => {
 
     await saveQueryIntoDatabase({ userId, searchType, searchTexts });
 
-    //TODO: whitelist data.items to return
     return res.status(200).json({ total: result.data.total_count, items: result.data.items });
   } catch (err) {
     console.log('==> Error:', err);
