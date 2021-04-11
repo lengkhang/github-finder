@@ -61,13 +61,15 @@ const RepositoriesTable = ({ data, isLoading, total, pageSize, currentPage, onPa
     onPagination(page);
   };
 
+  const maxPageResults = Math.min(total, pageSize * currentPage);
+
   return (
     <>
       {
         error && <Alert message={`Error: ${error}`} type="error" />
       }
       <Paragraph style={{ textAlign: 'right' }}>
-        { !isLoading && !error && total ? `Showing ${pageSize * (currentPage - 1) + 1} - ${pageSize * currentPage} of ${total}` : <br /> }
+        { !isLoading && !error && total ? `Showing ${pageSize * (currentPage - 1) + 1} - ${maxPageResults} of ${total}` : <br /> }
       </Paragraph>
 
       <Table

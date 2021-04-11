@@ -5,6 +5,7 @@ import { loadSearchHistory } from '../../actions/searchHistory';
 import { SAMPLE_USERS } from '../../constants/user';
 
 const { Paragraph } = Typography;
+const PAGE_SIZE = 20;
 
 const columns = [
   {
@@ -55,27 +56,26 @@ const generateSkeleton = () => {
   }));
 };
 
-const Report = ({ pageSize = 20, currentPage = 1 }) => {
+const Report = ({ currentPage = 1 }) => {
   const { searchHistory, user } = useSelector(state => state);
   const { current: currentUser } = user;
-  const { error, isLoading } = searchHistory;
+  const { error, isLoading, total } = searchHistory;
   const dispatch = useDispatch();
-  // const { currentPage, setCurrentPage }
 
   const skeletonRows = 5;
   const rowKey = '_id';
   const skeletonData = new Array(skeletonRows).fill({}).map((value, index) => ({ [rowKey]: index }));
   const data = searchHistory.items;
-  const total = data.total; //TODO: Backend to return total
 
   const onPageChange = (page) => {
-    //TODO: Call searchHistory endpoint with pagination
-    console.log('==> page', page);
+    dispatch(loadSearchHistory({ pageNo: page, pageSize: PAGE_SIZE}));
   };
 
   useEffect(() => {
-    dispatch(loadSearchHistory({}));
+    dispatch(loadSearchHistory({ pageSize: PAGE_SIZE}));
   }, [(currentUser || {}).id]);
+
+  const maxPageResults = Math.min(total, PAGE_SIZE * currentPage);
 
   return (
     <div className="site-layout-background" style={{ padding: 24 }}>
@@ -83,7 +83,7 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
         error && <Alert message={`Error: ${error}`} type="error" />
       }
       <Paragraph style={{ textAlign: 'right' }}>
-        { !isLoading && !error && total ? `Showing ${pageSize * (currentPage - 1) + 1} - ${pageSize * currentPage} of ${total}` : <br /> }
+        { !isLoading && !error && total ? `Showing ${PAGE_SIZE * (currentPage - 1) + 1} - ${maxPageResults} of ${total}` : <br /> }
       </Paragraph>
 
       <Table
@@ -92,8 +92,7 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
         rowKey={rowKey}
         pagination={{
           total,
-          pageSize: pageSize,
-          // current: currentPage,
+          pageSize: PAGE_SIZE,
           showSizeChanger: false,
           onChange: onPageChange
         }}
