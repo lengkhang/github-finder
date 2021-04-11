@@ -57,16 +57,12 @@ export const getSearch = async (req, res) => {
   try {
     const { id: userId } = req.currentUser;
     const { language, topic, pageSize, pageNo } = getValidatedData(req.query);
-    // const { language, topic, pageNo = 1, pageSize } = req.query || {};
 
-    console.log('==> pageNo, pageSize:', pageNo, pageSize, language, topic)
     const languages = language && language.split(',');
     const topics = topic && topic.split(',');
     const searchType = languages ? SEARCH_TYPE.LANGUAGE : SEARCH_TYPE.TOPIC;
     const searchTexts = getSearchTexts(searchType, languages, topics);
     const query = searchTexts.map(text => `${searchType}:${text}`).join('+');
-
-    console.log('==> query:', query);
 
     const result = await octokit.rest.search.repos({
       q: query,

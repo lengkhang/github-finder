@@ -19,7 +19,7 @@ export const mockSearchHistory = () => {
 
   jest.mock('../../models/searchHistory', () => {
     return jest.fn().mockImplementation(() => ({
-      save: jest.fn()
+      save: mockSave
     }));
   });
 
