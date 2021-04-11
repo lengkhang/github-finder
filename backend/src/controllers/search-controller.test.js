@@ -190,7 +190,6 @@ describe('GET /search/history', () => {
           });
 
           it('return error message', async () => {
-            console.log('==> response.body:', response.body);
             expect(response.body).toMatchObject({ 
               error: {
                 message: error.message
