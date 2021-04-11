@@ -56,7 +56,8 @@ const generateSkeleton = () => {
 };
 
 const Report = ({ pageSize = 20, currentPage = 1 }) => {
-  const { searchHistory } = useSelector(state => state);
+  const { searchHistory, user } = useSelector(state => state);
+  const { current: currentUser } = user;
   const { error, isLoading } = searchHistory;
   const dispatch = useDispatch();
   // const { currentPage, setCurrentPage }
@@ -74,10 +75,10 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
 
   useEffect(() => {
     dispatch(loadSearchHistory({}));
-  }, []);
+  }, [currentUser.id]);
 
   return (
-    <>
+    <div className="site-layout-background" style={{ padding: 24 }}>
       {
         error && <Alert message={`Error: ${error}`} type="error" />
       }
@@ -97,7 +98,7 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
           onChange: onPageChange
         }}
       />
-    </>
+    </div>
   );
 };
 
