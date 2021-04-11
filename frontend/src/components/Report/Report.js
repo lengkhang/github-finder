@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Table, Tag, Skeleton, Typography, Alert } from 'antd';
 import { loadSearchHistory } from '../../actions/searchHistory';
 import { SAMPLE_USERS } from '../../constants/user';
@@ -43,6 +44,11 @@ const columns = [
         }
       </>
     )
+  },
+  {
+    title: 'View result',
+    key: 'view',
+    render: (text, row) => <Link to={`/?${row.type}:${row.texts}`}>View</Link>
   }
 ];
 

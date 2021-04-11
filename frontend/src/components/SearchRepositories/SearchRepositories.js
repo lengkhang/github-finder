@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { Input, Select, Typography } from 'antd';
 import RepositoriesTable from '../RepositoriesTable/RepositoriesTable';
 import { searchRepositories, clearSearch } from '../../actions/repositories';
@@ -13,10 +14,37 @@ const SearchRepositories = () => {
   const { repositories: storeRepositories } = useSelector(state => state);
   const { isLoading, total, error } = storeRepositories;
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [searchType, setSearchType] = useState('language');
   const [searchTexts, setSearchTexts] = useState([]);
   const [currentPage, setCurrentPage] = useState(undefined);
+
+  const getSearchTypeAndText = (location) => {
+    const { search = '' } = location || {};
+    const prefix = {
+      topic: '?topic:',
+      language: '?language:'
+    };
+    let type;
+    let texts;
+
+    if (search.startsWith(prefix.topic)) {
+      texts = search.substr(prefix.topic.length).split(',');
+      type = 'topic';
+    } else if (search.startsWith(prefix.language)) {
+      texts = search.substr(prefix.language.length).split(',');
+      type = 'language';
+    }
+
+    if (texts) {
+      setSearchType(type);
+      setSearchTexts(texts);
+      setCurrentPage(1);
+
+      return { texts, type };
+    }
+  };
 
   const onSearch = async ({ texts, type, pageNo }) => {
     await dispatch(
@@ -57,7 +85,20 @@ const SearchRepositories = () => {
 
   useEffect(async () => {
     if (!currentPage) {
-      await dispatch(clearSearch());
+      const data = getSearchTypeAndText(location);
+
+      if (data) {
+        const { texts, type } = data;
+
+        await dispatch(searchRepositories({
+          texts,
+          type,
+          pageNo: 1,
+          pageSize: PAGE_SIZE
+        }));
+      } else {
+        await dispatch(clearSearch());
+      }
     }
   }, []);
 
@@ -69,12 +110,12 @@ const SearchRepositories = () => {
 
           <Select
             mode="tags"
-            defaultValue={[]}
+            value={searchTexts}
             onChange={onChange}
             style={{ width: '50%', maxWidth: '400px' }}
           />
 
-          <Select style={{ width: '150px' }} defaultValue={searchType} onChange={onSearchTypeChange}>
+          <Select style={{ width: '150px' }} value={searchType} onChange={onSearchTypeChange}>
             <Option value="language">Language</Option>
             <Option value="topic">Topic</Option>
           </Select>
