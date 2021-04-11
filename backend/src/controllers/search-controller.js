@@ -39,12 +39,15 @@ export const getAllSearchHistories = async (req, res) => {
   const { pageNo = 1, pageSize } = req.query || {};
 
   try {
+    console.log('==> start db');
     const [ total, searchHistory ] = await Promise.all([
       SearchHistory.countDocuments(),
       findSearchHistory({ pageSize: parseInt(pageSize), pageNo: parseInt(pageNo) })
     ]);
 
-    return res.status(200).json({ success: true, items: searchHistory, total });
+    console.log('==> end db:', { items: searchHistory, total });
+
+    return res.status(200).json({ items: searchHistory, total });
   } catch (err) {
     console.error('==> Error:', err);
     return res.status(500).json({ success: false, error: err });
