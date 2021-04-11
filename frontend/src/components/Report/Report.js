@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Table, Tag, Skeleton, Typography, Alert } from 'antd';
 import { loadSearchHistory } from '../../actions/searchHistory';
@@ -15,14 +15,14 @@ const columns = [
     render: (userId) => SAMPLE_USERS.find(user => user.id === userId).name
   },
   {
-    title: 'Search type',
-    dataIndex: 'type',
-    key: 'type'
-  },
-  {
     title: 'Searched at',
     dataIndex: 'createdAt',
     key: 'createdAt'
+  },
+  {
+    title: 'Search type',
+    dataIndex: 'type',
+    key: 'type'
   },
   {
     title: 'Search text',
@@ -56,11 +56,12 @@ const generateSkeleton = () => {
   }));
 };
 
-const Report = ({ currentPage = 1 }) => {
+const Report = () => {
   const { searchHistory, user } = useSelector(state => state);
   const { current: currentUser } = user;
   const { error, isLoading, total } = searchHistory;
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const skeletonRows = 5;
   const rowKey = '_id';
@@ -69,6 +70,7 @@ const Report = ({ currentPage = 1 }) => {
 
   const onPageChange = (page) => {
     dispatch(loadSearchHistory({ pageNo: page, pageSize: PAGE_SIZE}));
+    setCurrentPage(page);
   };
 
   useEffect(() => {

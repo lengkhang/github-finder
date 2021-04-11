@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { UserOutlined, TeamOutlined } from '@ant-design/icons';
 import { SAMPLE_USERS, USER_ROLE } from '../../constants/user';
@@ -16,7 +17,7 @@ const SideMenu = () => {
 
   const users = SAMPLE_USERS.filter(user => user.role === USER_ROLE.USER);
   const admins = SAMPLE_USERS.filter(user => user.role === USER_ROLE.ADMIN);
-  const initialUser = admins[0];
+  const initialUser = users[0];
 
   useEffect(() => {
     if (!currentUser) {
@@ -41,13 +42,13 @@ const SideMenu = () => {
       <Menu theme="dark" defaultSelectedKeys={initialUser.id} mode="inline" onSelect={onUserSelected}>
         <SubMenu key="sub1" icon={<UserOutlined />} title="Users">
           {
-            users.map(({id, name}) => <Menu.Item key={id}>{name}</Menu.Item>)
+            users.map(({id, name}) => <Menu.Item key={id}>{name}<Link to="/" /></Menu.Item>)
           }
         </SubMenu>
 
         <SubMenu key="sub2" icon={<TeamOutlined />} title="Admins">
           {
-            admins.map(({id, name}) => <Menu.Item key={id}>{name}</Menu.Item>)
+            admins.map(({id, name}) => <Menu.Item key={id}>{name}<Link to="/" /></Menu.Item>)
           }
         </SubMenu>
       </Menu>

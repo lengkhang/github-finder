@@ -20,7 +20,7 @@ const HeaderMenu = () => {
   return (
     <Header className="header">
       <div className="logo" />
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[usePathname()]}>
+      <Menu theme="dark" mode="horizontal" selectedKeys={[usePathname()]}>
         <Menu.Item key="/">
           Search
           <Link to="/" />
