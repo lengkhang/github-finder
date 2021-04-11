@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import searchRoutes from './search-routes';
+import searchRoutes from './searchRoutes';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));

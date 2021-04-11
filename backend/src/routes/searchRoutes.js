@@ -1,9 +1,7 @@
 import express from 'express';
 import { getJwt, adminRoleRequired } from '../middleware/auth';
-import {
-  getSearch,
-  getAllSearchHistories
-} from '../controllers/search-controller';
+import { getAllSearchHistories } from '../APIs/listSearchHistory';
+import { getSearch } from '../APIs/searchRepository';
 
 const router = express.Router();
 

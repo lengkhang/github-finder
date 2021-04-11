@@ -1,10 +1,10 @@
-import { getAllSearchHistories } from './search-controller';
-import SearchHistory from '../models/searchHistory';
+import { getAllSearchHistories } from '../listSearchHistory';
+import SearchHistory from '../../models/searchHistory';
 import request from 'supertest';
-import appBootstrapper from '../bootstrap/appBootstrapper';
-import { USER_ROLE_TOKENS } from '../__mocks__/userTokens';
+import appBootstrapper from '../../bootstrap/appBootstrapper';
+import { USER_ROLE_TOKENS } from '../../__mocks__/userTokens';
 
-jest.mock('../models/searchHistory', () => ({ find: jest.fn(), countDocuments: jest.fn() }));
+jest.mock('../../models/searchHistory', () => ({ find: jest.fn(), countDocuments: jest.fn() }));
 
 describe('GET /search/history', () => {
   async function getRequest(url, authHeader = '') {
