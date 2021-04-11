@@ -2,10 +2,10 @@ import jwt from 'jsonwebtoken';
 
 export const getJwt = (req, res, next) => {
   const { authorization = '' } = req.headers;
-  const bearerString = "Bearer ";
+  const bearerString = 'Bearer ';
   let token;
 
-  if (authorization.startsWith(bearerString)){
+  if (authorization.startsWith(bearerString)) {
     token = authorization.substring(bearerString.length, authorization.length);
 
     const { id, role } = jwt.decode(token);

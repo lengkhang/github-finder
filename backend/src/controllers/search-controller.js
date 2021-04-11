@@ -4,7 +4,7 @@ import { SEARCH_TYPE } from '../constants';
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
-  previews: ["mercy-preview"]
+  previews: ['mercy-preview']
 });
 
 const saveQueryIntoDatabase = async ({ userId, searchType, searchTexts }) => {
@@ -46,13 +46,13 @@ export const getAllSearchHistories = async (req, res) => {
 
     return res.status(200).json({ success: true, items: searchHistory, total });
   } catch (err) {
-    console.log('==> err:', err);
+    console.error('==> Error:', err);
     return res.status(500).json({ success: false, error: err });
   }
 };
 
-  //http://localhost:3001/api/search?language=c%2B%2B%2Cjava&pageSize=100&pageNo=2
-  //http://localhost:3001/api/search?topic=ruby,graphql&pageSize=100&pageNo=1
+//http://localhost:3001/api/search?language=c%2B%2B%2Cjava&pageSize=100&pageNo=2
+//http://localhost:3001/api/search?topic=ruby,graphql&pageSize=100&pageNo=1
 export const getSearch = async (req, res) => {
   //TODO: Validate query string using JOI?
   const { id: userId } = req.currentUser;
@@ -72,13 +72,14 @@ export const getSearch = async (req, res) => {
     const result = await octokit.rest.search.repos({
       q: query,
       page: parseInt(pageNo),
-      per_page: parseInt(pageSize)
+      'per_page': parseInt(pageSize)
     });
 
-    await saveQueryIntoDatabase({ userId, searchType, searchTexts });  //TODO: Get user via middleware
-  
+    await saveQueryIntoDatabase({ userId, searchType, searchTexts });
+
     return res.status(200).json({ total: result.data.total_count, items: result.data.items });
   } catch (err) {
+    console.error('==> Error:', err);
     return res.status(500).json({ error: { message: err.message } });
   }
 };
