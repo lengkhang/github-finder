@@ -13,8 +13,6 @@ const saveQueryIntoDatabase = async ({ userId, searchType, searchTexts }) => {
 
     await searchHistory.save();
   } catch (err) {
-    console.log('==> Save to db failed:', err.message);
-
     throw new Error(err.message);
   }
 };
@@ -50,7 +48,12 @@ export const getAllSearchHistories = async (req, res) => {
     return res.status(200).json({ items: searchHistory, total });
   } catch (err) {
     console.error('==> Error:', err);
-    return res.status(500).json({ success: false, error: err });
+
+    return res.status(500).json({ 
+      error: {
+        message: err.message
+      }
+    });
   }
 };
 
@@ -83,6 +86,11 @@ export const getSearch = async (req, res) => {
     return res.status(200).json({ total: result.data.total_count, items: result.data.items });
   } catch (err) {
     console.error('==> Error:', err);
-    return res.status(500).json({ error: { message: err.message } });
+
+    return res.status(500).json({ 
+      error: {
+        message: err.message
+      }
+    });
   }
 };

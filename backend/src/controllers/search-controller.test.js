@@ -100,23 +100,103 @@ describe('GET /search/history', () => {
                   }
                 })
               })
-            })
-            );
+            }));
 
             response = await getRequest('/api/search/history?pageSize=2,pageNo=3', USER_ROLE_TOKENS.ADMIN);
           });
 
-          it('return response 404', () => {
+          it('return response 200', async () => {
+            expect(response.status).toBe(200);
+          });
 
+          it('return empty list', async () => {
+            expect(response.body).toMatchObject({ items: [], total: 0 });
           });
         });
 
         describe('when user is requesting for first page', () => {
+          const firstPageData = [
+            {
+              texts: ["node"],
+              _id: "6072a12324728c3dd5776df6",
+              type: "topic",
+              userId: "433102b0-686c-424e-8540-40360d4d36d4",
+              createdAt: "2021-04-11T07:11:31.854Z",
+              updatedAt: "2021-04-11T07:11:31.854Z",
+              __v: 0,
+            },
+            {
+              texts: ["node"],
+              _id: "6072a11f24728c3dd5776df5",
+              type: "topic",
+              userId: "433102b0-686c-424e-8540-40360d4d36d4",
+              createdAt: "2021-04-11T07:11:27.357Z",
+              updatedAt: "2021-04-11T07:11:27.357Z",
+              __v: 0,
+            },
+          ];
 
+          let response;
+
+          beforeAll(async () => {
+            SearchHistory.countDocuments.mockResolvedValueOnce(3);
+            SearchHistory.find.mockImplementationOnce(() => ({
+              limit: () => ({
+                skip: () => ({
+                  sort: () => {
+                    return new Promise((resolve, reject) => {
+                      resolve(firstPageData);
+                    });
+                  }
+                })
+              })
+            }));
+
+            response = await getRequest('/api/search/history?pageSize=2,pageNo=1', USER_ROLE_TOKENS.ADMIN);
+          });
+
+          it('return response 200', async () => {
+            expect(response.status).toBe(200);
+          });
+
+          it('return empty list', async () => {
+            expect(response.body).toMatchObject({ items: firstPageData, total: 3 });
+          });
         });
 
-        describe('when user is requesting for last page', () => {
+        describe('when there is an error in retrieving data from database', () => {
+          const error = new Error('Unexpected error from database ¯\_(ツ)_/¯');
+          let response;
 
+          beforeAll(async () => {
+            SearchHistory.countDocuments.mockRejectedValueOnce(error);
+            SearchHistory.find.mockImplementationOnce(() => ({
+              limit: () => ({
+                skip: () => ({
+                  sort: () => {
+                    return new Promise((resolve, reject) => {
+                      resolve([]);
+                    });
+                  }
+                })
+              })
+            }));
+
+            response = await getRequest('/api/search/history?pageSize=2,pageNo=3', USER_ROLE_TOKENS.ADMIN);
+          });
+
+          it('return response 500', async () => {
+            expect(response.status).toBe(500);
+          });
+
+          it('return error message', async () => {
+            console.log('==> response.body:', response.body);
+            expect(response.body).toMatchObject({ 
+              error: {
+                message: error.message
+              }
+            });
+          });
         });
       });
     });
