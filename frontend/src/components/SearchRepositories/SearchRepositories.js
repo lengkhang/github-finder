@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Input, Select, Typography } from 'antd';
 import RepositoriesTable from '../RepositoriesTable/RepositoriesTable';
@@ -54,6 +54,12 @@ const SearchRepositories = () => {
 
     await onSearch({ pageNo: page });
   };
+
+  useEffect(async () => {
+    if (!currentPage) {
+      await dispatch(clearSearch());
+    }
+  }, []);
 
   return (
     <>
