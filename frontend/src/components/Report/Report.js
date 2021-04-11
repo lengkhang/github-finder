@@ -75,7 +75,7 @@ const Report = ({ pageSize = 20, currentPage = 1 }) => {
 
   useEffect(() => {
     dispatch(loadSearchHistory({}));
-  }, [currentUser.id]);
+  }, [(currentUser || {}).id]);
 
   return (
     <div className="site-layout-background" style={{ padding: 24 }}>
