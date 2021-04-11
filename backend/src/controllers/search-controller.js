@@ -28,12 +28,27 @@ const getSearchTexts = (searchType, languages, topics) => {
   return searchTextMapType[searchType];
 }
 
-export const getAllSearchHistories = (req, res) => {
-  //TODO: Handle pagination, Sort desc
-  SearchHistory.find((err, searchHistory) => {
-    if (err) return res.status(500).json({ success: false, error: err });
-    return res.status(200).json({ success: true, items: searchHistory });
-  });
+const findSearchHistory = ({ pageSize, pageNo }) => {
+  return SearchHistory.find()
+    .limit(pageSize)
+    .skip(pageSize * (pageNo - 1))
+    .sort('-createdAt');
+};
+
+export const getAllSearchHistories = async (req, res) => {
+  const { pageNo = 1, pageSize } = req.query || {};
+
+  try {
+    const [ total, searchHistory ] = await Promise.all([
+      SearchHistory.countDocuments(),
+      findSearchHistory({ pageSize: parseInt(pageSize), pageNo: parseInt(pageNo) })
+    ]);
+
+    return res.status(200).json({ success: true, items: searchHistory, total });
+  } catch (err) {
+    console.log('==> err:', err);
+    return res.status(500).json({ success: false, error: err });
+  }
 };
 
   //http://localhost:3001/api/search?language=c%2B%2B%2Cjava&pageSize=100&pageNo=2
