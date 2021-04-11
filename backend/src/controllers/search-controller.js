@@ -29,7 +29,7 @@ const getSearchTexts = (searchType, languages, topics) => {
 }
 
 export const getAllSearchHistories = (req, res) => {
-  //TODO: Handle pagination
+  //TODO: Handle pagination, Sort desc
   SearchHistory.find((err, searchHistory) => {
     if (err) return res.status(500).json({ success: false, error: err });
     return res.status(200).json({ success: true, items: searchHistory });

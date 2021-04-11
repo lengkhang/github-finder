@@ -1,5 +1,5 @@
 import express from 'express';
-import { getJwt } from '../middleware/auth';
+import { getJwt, adminRoleRequired } from '../middleware/auth';
 import {
   getSearch,
   getAllSearchHistories
@@ -8,6 +8,6 @@ import {
 const router = express.Router();
 
 router.get('/search', getJwt, getSearch);
-router.get('/search/history', getAllSearchHistories);
+router.get('/search/history', getJwt, adminRoleRequired, getAllSearchHistories);
 
 export default router;

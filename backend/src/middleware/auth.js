@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export const getJwt = (req, res, next) => {
-  const { authorization } = req.headers;
+  const { authorization = '' } = req.headers;
   const bearerString = "Bearer ";
   let token;
 
@@ -16,3 +16,13 @@ export const getJwt = (req, res, next) => {
 
   return res.status(401).json({ error: { message: 'Missing authorization header' } });
 };
+
+export const adminRoleRequired = (req, res, next) => {
+  const { role } = req.currentUser || {};
+
+  if (role === 'admin') {
+    return next();
+  }
+
+  return res.status(401).json({ error: { message: 'Only admin can perform this action' } });
+}
