@@ -39,6 +39,9 @@
   "jest": {
     "preset": "@shelf/jest-mongodb",
     "clearMocks": true,
+    "testMatch": [
+      "<rootDir>/src/**/*.test.js"
+    ],
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
