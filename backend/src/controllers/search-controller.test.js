@@ -4,7 +4,7 @@ import request from 'supertest';
 import appBootstrapper from '../bootstrap/appBootstrapper';
 import { USER_ROLE_TOKENS } from '../__mocks__/userTokens';
 
-jest.mock('../models/searchHistory');
+jest.mock('../models/searchHistory', () => ({ find: jest.fn(), countDocuments: jest.fn() }));
 
 describe('GET /search/history', () => {
   async function getRequest(url, authHeader = '') {
@@ -49,8 +49,32 @@ describe('GET /search/history', () => {
   });
 
   describe('when admin authorization header is provided', () => {
-    describe.skip('when invalid query string is provided', () => {
-      //TODO:
+    describe.each([
+      [null, null, 'ValidationError: "pageSize" contains an invalid value'],
+      [null, 1, 'ValidationError: "pageSize" contains an invalid value'],
+      ['abc', 1, 'ValidationError: "pageSize" contains an invalid value'],
+      [0, 1, 'ValidationError: "pageSize" contains an invalid value'],
+      [1, null, 'ValidationError: "pageNo" contains an invalid value'],
+      [1, 'abc', 'ValidationError: "pageNo" contains an invalid value'],
+      [1, 0, 'ValidationError: "pageNo" contains an invalid value']
+    ])('when invalid query string is provided (pageSize: %s, pageNo: %s)', (pageSize, pageNo, errorMessage) => {
+      let response;
+
+      beforeAll(async () => {
+        response = await getRequest(`/api/search/history?pageSize=${pageSize}&pageNo=${pageNo}`, USER_ROLE_TOKENS.ADMIN);
+      });
+
+      it('return response 422', async () => {
+        expect(response.status).toBe(422);
+      });
+
+      it('return error message', async () => {
+        expect(response.body).toMatchObject({
+          error: {
+            message: errorMessage
+          }
+        });
+      });
     });
 
     describe('when valid query string is provided', () => {
@@ -72,7 +96,7 @@ describe('GET /search/history', () => {
           })
           );
 
-          response = await getRequest('/api/search/history', USER_ROLE_TOKENS.ADMIN);
+          response = await getRequest('/api/search/history?pageSize=2&pageNo=1', USER_ROLE_TOKENS.ADMIN);
         });
 
         it('return response 200', async () => {
@@ -102,7 +126,7 @@ describe('GET /search/history', () => {
               })
             }));
 
-            response = await getRequest('/api/search/history?pageSize=2,pageNo=3', USER_ROLE_TOKENS.ADMIN);
+            response = await getRequest('/api/search/history?pageSize=2&pageNo=3', USER_ROLE_TOKENS.ADMIN);
           });
 
           it('return response 200', async () => {
@@ -152,14 +176,14 @@ describe('GET /search/history', () => {
               })
             }));
 
-            response = await getRequest('/api/search/history?pageSize=2,pageNo=1', USER_ROLE_TOKENS.ADMIN);
+            response = await getRequest('/api/search/history?pageSize=2&pageNo=1', USER_ROLE_TOKENS.ADMIN);
           });
 
           it('return response 200', async () => {
             expect(response.status).toBe(200);
           });
 
-          it('return empty list', async () => {
+          it('return list of search histories', async () => {
             expect(response.body).toMatchObject({ items: firstPageData, total: 3 });
           });
         });
@@ -182,7 +206,7 @@ describe('GET /search/history', () => {
               })
             }));
 
-            response = await getRequest('/api/search/history?pageSize=2,pageNo=3', USER_ROLE_TOKENS.ADMIN);
+            response = await getRequest('/api/search/history?pageSize=2&pageNo=3', USER_ROLE_TOKENS.ADMIN);
           });
 
           it('return response 500', async () => {
@@ -190,7 +214,7 @@ describe('GET /search/history', () => {
           });
 
           it('return error message', async () => {
-            expect(response.body).toMatchObject({ 
+            expect(response.body).toMatchObject({
               error: {
                 message: error.message
               }
