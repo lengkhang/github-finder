@@ -42,6 +42,7 @@
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
+    "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup/setupBeforeEachTest.js"],
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]

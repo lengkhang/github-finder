@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import SearchHistory from '../models/searchHistory';
 import { SEARCH_TYPE, ERROR_CODE } from '../constants';
+import { parseToInteger } from '../lib/joiCustomValidation';
 
 const saveQueryIntoDatabase = async ({ userId, searchType, searchTexts }) => {
   try {
@@ -17,16 +18,6 @@ const findSearchHistory = ({ pageSize, pageNo }) => {
     .limit(pageSize)
     .skip(pageSize * (pageNo - 1))
     .sort('-createdAt');
-};
-
-const parseToInteger = (value, helpers) => {
-  const valueInInt = parseInt(value);
-
-  if (valueInInt > 0) {
-    return valueInInt;
-  }
-
-  return helpers.error("any.invalid");
 };
 
 const getValidatedData = (query) => {

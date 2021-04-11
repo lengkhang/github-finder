@@ -2,11 +2,37 @@ import { Octokit } from '@octokit/rest';
 import Joi from 'joi';
 import SearchHistory from '../models/searchHistory';
 import { SEARCH_TYPE, ERROR_CODE } from '../constants';
+import { parseToInteger } from '../lib/joiCustomValidation';
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   previews: ['mercy-preview']
 });
+
+const getValidatedData = (query) => {
+  const schema = Joi.object({
+    language: Joi.string(),
+    topic: Joi.string(),
+    pageSize: Joi.string().required().custom(parseToInteger),
+    pageNo: Joi.string().required().custom(parseToInteger)
+  });
+
+  const { value: validatedValue, error } = schema.validate(query);
+
+  if (error) {
+    const err = new Error(error);
+    err.code = ERROR_CODE.VALIDATION;
+
+    throw err;
+  } else if (!validatedValue.language && !validatedValue.topic) {
+    const err = new Error('ValidationError: Either "language" and "topic" must contain value');
+    err.code = ERROR_CODE.VALIDATION;
+
+    throw err;
+  }
+
+  return validatedValue;
+}
 
 const saveQueryIntoDatabase = async ({ userId, searchType, searchTexts }) => {
   try {
@@ -27,12 +53,11 @@ const getSearchTexts = (searchType, languages, topics) => {
   return searchTextMapType[searchType];
 }
 
-//http://localhost:3001/api/search?language=c%2B%2B%2Cjava&pageSize=100&pageNo=2
-//http://localhost:3001/api/search?topic=ruby,graphql&pageSize=100&pageNo=1
 export const getSearch = async (req, res) => {
   try {
     const { id: userId } = req.currentUser;
-    const { language, topic, pageNo = 1, pageSize } = req.query || {};
+    const { language, topic, pageSize, pageNo } = getValidatedData(req.query);
+    // const { language, topic, pageNo = 1, pageSize } = req.query || {};
 
     console.log('==> pageNo, pageSize:', pageNo, pageSize, language, topic)
     const languages = language && language.split(',');
@@ -51,6 +76,7 @@ export const getSearch = async (req, res) => {
 
     await saveQueryIntoDatabase({ userId, searchType, searchTexts });
 
+    //TODO: whitelist data.items to return
     return res.status(200).json({ total: result.data.total_count, items: result.data.items });
   } catch (err) {
     console.log('==> Error:', err);
