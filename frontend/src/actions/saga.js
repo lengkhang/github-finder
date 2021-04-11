@@ -39,8 +39,17 @@ function* loadSearchHistory(payload = {}) {
   try {
     const { data } = payload;
     const { pageNo = 1, pageSize = 20 } = data;
+    const currentUser = yield select(getCurrentUser);
+    const authHeader = yield getAuthHeader(currentUser);
 
-    const response = yield fetch(`${process.env.REACT_APP_API_URL}/search/history?pageSize=${pageSize}&pageNo=${pageNo}`);
+    const response = yield fetch(`${process.env.REACT_APP_API_URL}/search/history?pageSize=${pageSize}&pageNo=${pageNo}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: authHeader
+      }
+    });
 
     const results = yield response.json();
 
